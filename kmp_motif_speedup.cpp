@@ -34,9 +34,10 @@ int main(int argc, const char * argv[]){
     f(CAGC) = 1
     f(CAGCA) = 2
     f(CAGCAT) = 0
-    f(CAGCATG) = 1
+    f(CAGCATG) = 0
     ...
     ...
+    f(CAGCATGGTA) = 0
     f(CAGCATGGTATCACAGCAGAG) = 0
 
     
@@ -49,11 +50,12 @@ int main(int argc, const char * argv[]){
     getline(inFile, DNA);
 
     int dna_len = get_len(DNA) - 1;
-    int * failure_arr = (int *)calloc(dna_len, sizeof(int));
+    int * failure_arr = (int *)malloc(sizeof(int) * dna_len);
     int i;
 
 
     for(i = 0; i < dna_len; i++){
+        cout << i << " ";
         if(i == 0){
             //first index of failure array is always 0 because there is only 1 character.
             failure_arr[i] = 0;
@@ -67,13 +69,15 @@ int main(int argc, const char * argv[]){
                     if(j == 0){
                         break;
                     } else if(DNA[i] == DNA[j-1]){
-                        failure_arr[i] = failure_arr[j];
+                        failure_arr[i] = failure_arr[j-1];
                         break;
                     }
                 }
+                cout << j << " " << failure_arr[i] << endl;
             } 
         }
-        cout << failure_arr[i] << " ";
+        
+        
     }
 
     cout << endl;
