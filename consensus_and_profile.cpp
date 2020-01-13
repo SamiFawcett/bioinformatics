@@ -25,7 +25,7 @@ T: 1 5 0 0 0 1 1 6
 */
 
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <stdlib.h>
 #include <fstream>
 
@@ -131,8 +131,7 @@ int main(int argc, char const *argv[])
 
    //skip first line
    getline(inFile, line);
-
-    int update_ready = 0;
+   int update_ready = 0;
     
     while(getline(inFile, line)){
         //only used once because we only need to update profile dimensions once
@@ -162,6 +161,8 @@ int main(int argc, char const *argv[])
     }
     //final update
     update_profile(full_dna, dna_len, profile);
+
+    //print_profile(profile, dna_len);
 
     char * consensus = (char *)calloc(dna_len, sizeof(char));
     
