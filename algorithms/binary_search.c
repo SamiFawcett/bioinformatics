@@ -2,23 +2,76 @@
 #include <stdio.h>
 #include <string.h>
 
+void printIArr(int *arr, int arrSize)
+{
+ printf("[");
+ for (int i = 0; i < arrSize; i++)
+ {
+  if (i < arrSize - 1)
+  {
+   printf("%d ", *(arr + i));
+  }
+  else
+  {
+   printf("%d", *(arr + i));
+  }
+ }
+ printf("]");
+}
+
+int size_astr(const char *arr)
+{
+ char *copy = malloc(strlen(arr) + 1);
+ strcpy(copy, arr);
+ int size = 0;
+ const char delim[2] = " ";
+ char *token;
+ token = strtok(copy, delim);
+ while (token != NULL)
+ {
+  size++;
+  token = strtok(NULL, delim);
+ }
+ free(copy);
+ return size;
+}
 int size(int *arr)
 {
- int i = 0;
- while (arr[i])
+}
+
+int *catoia(char *arr, int arrLength)
+{
+ int *ret = (int *)malloc(arrLength * sizeof(int));
+ char *copy = malloc(strlen(arr) + 1);
+ strcpy(copy, arr);
+
+ const char delim[2] = " ";
+ char *token;
+ token = strtok(copy, delim);
+ int index = 0;
+ while (token != NULL)
  {
-  i++;
+  *(ret + index) = atoi(token);
+  token = strtok(NULL, delim);
+  index++;
  }
- return i;
+
+ free(copy);
+ return ret;
 }
 
 void readFile(const char *filename, char ***data)
 {
+
  FILE *fptr = fopen(filename, "r");
- char buffer[50];
+ fseek(fptr, 0, SEEK_END);
+ int fileSize = ftell(fptr);
+ fseek(fptr, 0, SEEK_SET);
+
+ char buffer[fileSize];
  char **t = *data;
  int dataIndex = 0;
- while (fgets(buffer, 50, fptr))
+ while (fgets(buffer, fileSize, fptr))
  {
   char *data = malloc(strlen(buffer) + 1);
   strcpy(data, buffer);
@@ -29,10 +82,10 @@ void readFile(const char *filename, char ***data)
  fclose(fptr);
 }
 
-int binarySearch(int *arr, int target)
+int binarySearch(int *arr, int arrSize, int target)
 {
  int left = 0;
- int right = size(arr) - 1;
+ int right = arrSize - 1;
 
  while (left <= right)
  {
@@ -64,37 +117,15 @@ int main(int argc, char **argv)
  readFile(filename, &data);
  int n = atoi(*(data));
  int m = atoi(*(data + 1));
- int *searchArray = (int *)calloc(strlen(*(data + 2)), sizeof(int));
- int searchArrayIndex = 0;
- const char delim[2] = " ";
- char *token;
- token = strtok(*(data + 2), delim);
- while (token != NULL)
- {
-  *(searchArray + searchArrayIndex) = atoi(token);
-  token = strtok(NULL, delim);
-  searchArrayIndex++;
- }
+ int searchArraySize = size_astr(*(data + 2));
+ int kIntegersSize = size_astr(*(data + 3));
+ int *searchArray = catoia(*(data + 2), searchArraySize);
+ int *kIntegers = catoia(*(data + 3), kIntegersSize);
 
- int *kIntegers = (int *)calloc(strlen(*(data + 3)), sizeof(int));
- int kIntegersIndex = 0;
- token = strtok(*(data + 3), delim);
- while (token != NULL)
+ for (int i = 0; i < kIntegersSize; i++)
  {
-  *(kIntegers + kIntegersIndex) = atoi(token);
-  token = strtok(NULL, delim);
-  kIntegersIndex++;
- }
-
- /* problem */
- //int *result = (int *)calloc(strlen(*(data + 3)), sizeof(int));
- int i = 0;
- while (kIntegers[i])
- {
-  int targetIdx = binarySearch(searchArray, kIntegers[i]);
-  printf("%d ", targetIdx);
-  //*(result + i) = targetIdx;
-  i++;
+  int indx = binarySearch(searchArray, searchArraySize, *(kIntegers + i));
+  printf("%d ", indx);
  }
 
  /* free memory */
